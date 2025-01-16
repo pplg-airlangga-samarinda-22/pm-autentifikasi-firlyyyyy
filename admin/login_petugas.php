@@ -1,31 +1,10 @@
-<?php
-require 'koneksi.php';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nik = $_POST['nik'];
-    $username = $_POST['username'];
-    $password = md5($_POST['password']);
-
-    $sql = 'SELECT * FROM masyarakat WHERE nik=? AND username=? AND password=?';
-    $row = $koneksi->execute_query($sql, [$nik, $username, $password]);
-
-    if (mysqli_num_rows($row) == 1) {
-        session_start();
-        $_SESSION['nik'] = $nik;
-        header('location:index.php');
-    } else {
-        echo "<script>alert('Gagal Login')</script>";
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login Petugas</title>
     <style>
         /* Gaya dasar */
         body {
@@ -40,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         /* Kontainer form */
-        .form-login {
+        .form-container {
             background-color: #fff;
             padding: 20px 30px;
             border-radius: 10px;
@@ -49,17 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 400px;
         }
 
-        .form-login p {
-            font-size: 18px;
-            font-weight: bold;
+        .form-container h1 {
             text-align: center;
+            color: #333;
             margin-bottom: 20px;
+            font-size: 22px;
         }
 
         .form-item {
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
-            margin-bottom: 15px;
         }
 
         .form-item label {
@@ -83,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .form-actions {
             margin-top: 20px;
-            text-align: center;
         }
 
         button {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 10px;
             background-color: #007bff;
             color: #fff;
             border: none;
@@ -95,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
-            width: 100%;
         }
 
         button:hover {
@@ -103,8 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         a {
-            display: inline-block;
-            margin-top: 10px;
+            display: block;
+            text-align: center;
+            margin-top: 15px;
             color: #007bff;
             text-decoration: none;
             font-size: 14px;
@@ -118,30 +97,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <form action="" method="post" class="form-login">
-        <p>Silahkan Login</p>
-        <div class="form-item">
-            <label for="nik">NIK</label>
-            <input type="text" name="nik" id="nik" required>
-        </div>
+    <div class="form-container">
+        <h1>Login Petugas</h1>
+        <form action="" method="post">
+            <div class="form-item">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required>
+            </div>
 
-        <div class="form-item">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" required>
-        </div>
+            <div class="form-item">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+            </div>
 
-        <div class="form-item">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit">Login</button>
-            <a href="register.php">Register</a>
-            atau
-            <a href="admin/login_petugas.php">Login Petugas</a>
-        </div>
-    </form>
+            <div class="form-actions">
+                <button type="submit">Login</button>
+                <a href="/login.php">Kembali ke Halaman Utama</a>
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>

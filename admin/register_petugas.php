@@ -1,24 +1,29 @@
 <?php
-require 'koneksi.php';
+require '../koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nik = $_POST['nik'];
+    $username = $_POST['username'];
 
-    $sql = 'SELECT * FROM masyarakat WHERE nik=?';
-    $cek = $koneksi->execute_query($sql, [$nik]);
+    // Cek apakah username sudah digunakan
+    $sql = 'SELECT * FROM petugas WHERE username=?';
+    $cek = $koneksi->execute_query($sql, [$username]);
 
     if (mysqli_num_rows($cek) == 1) {
-        echo "<script>alert('NIK sudah digunakan')</script>";
+        echo "<script>alert('Username sudah digunakan')</script>";
     } else {
-        $nik = $_POST['nik'];
-        $nama = $_POST['nama'];
+        // Ambil data dari form
+        $nama_petugas = $_POST['nama_petugas'];
         $telepon = $_POST['telp'];
         $username = $_POST['username'];
         $password = md5($_POST['password']);
-        $sql = 'INSERT INTO masyarakat (nik, nama, telp, username, password) VALUES (?, ?, ?, ?, ?)';
-        $koneksi->execute_query($sql, [$nik, $nama, $telepon, $username, $password]);
-        echo "<script>alert('pendaftaran berhasil')</script>";
-        header('location:login.php');
+        $level = $_POST['level'];
+
+        // Query untuk insert data petugas
+        $sql = 'INSERT INTO petugas (nama_petugas, username, password, telp, level) VALUES (?, ?, ?, ?, ?)';
+        $koneksi->execute_query($sql, [$nama_petugas, $username, $password, $telepon, $level]);
+
+        echo "<script>alert('Pendaftaran berhasil')</script>";
+        header('location:login_petugas.php');
     }
 }
 ?>
@@ -29,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi</title>
+    <title>Registrasi Petugas</title>
     <style>
         /* Gaya dasar */
         body {
@@ -57,22 +62,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
-            font-size: 22px;
         }
 
         .form-item {
             margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
         }
 
         .form-item label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 5px;
         }
 
-        .form-item input {
+        .form-item input,
+        .form-item select {
+            width: 100%;
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ccc;
@@ -81,12 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: border-color 0.3s;
         }
 
-        .form-item input:focus {
+        .form-item input:focus,
+        .form-item select:focus {
             border-color: #007bff;
-        }
-
-        .form-actions {
-            margin-top: 20px;
         }
 
         button {
@@ -108,10 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         a {
             display: block;
             text-align: center;
-            margin-top: 15px;
+            margin-top: 10px;
             color: #007bff;
             text-decoration: none;
-            font-size: 14px;
             transition: color 0.3s;
         }
 
@@ -123,16 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="form-container">
-        <h1>Registrasi Pengguna Baru</h1>
+        <h1>Registrasi Petugas Baru</h1>
         <form action="" method="post">
             <div class="form-item">
-                <label for="nik">NIK</label>
-                <input type="text" name="nik" id="nik" required>
-            </div>
-
-            <div class="form-item">
-                <label for="nama">Nama</label>
-                <input type="text" name="nama" id="nama" required>
+                <label for="nama_petugas">Nama Petugas</label>
+                <input type="text" name="nama_petugas" id="nama_petugas" required>
             </div>
 
             <div class="form-item">
@@ -150,10 +146,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" name="password" id="password" required>
             </div>
 
-            <div class="form-actions">
-                <button type="submit">Register</button>
-                <a href="login.php">Batal</a>
+            <div class="form-item">
+                <label for="level">Level</label>
+                <select name="level" id="level" required>
+                    <option value="admin">Admin</option>
+                    <option value="petugas">Petugas</option>
+                </select>
             </div>
+
+            <button type="submit">Register</button>
+            <a href="login_petugas.php">Batal</a>
         </form>
     </div>
 </body>
