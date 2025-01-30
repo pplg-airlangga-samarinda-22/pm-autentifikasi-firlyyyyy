@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Login</button>
             <a href="register.php">Register</a>
             atau
-            <a href="admin/login_petugas.php">Login Petugas</a>
+            <a href="admin/login.php">Login Petugas</a>
         </div>
     </form>
 </body>

@@ -1,3 +1,23 @@
+<?php
+require '../koneksi.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+
+    $sql = 'SELECT * FROM petugas WHERE username=? AND password=?';
+    $row = $koneksi->execute_query($sql, [$username, $password])->fetch_assoc();
+
+    if ($row) {
+        session_start();
+        $_SESSION['id'] = $row['id_petugas'];
+        $_SESSION['level'] = $row['level'];
+        header('location:index.php');
+    } else {
+        echo "<script>alert('Gagal Login')</script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,7 +39,7 @@
         }
 
         /* Kontainer form */
-        .form-container {
+        .form-login {
             background-color: #fff;
             padding: 20px 30px;
             border-radius: 10px;
@@ -28,17 +48,17 @@
             max-width: 400px;
         }
 
-        .form-container h1 {
+        .form-login p {
+            font-size: 18px;
+            font-weight: bold;
             text-align: center;
-            color: #333;
             margin-bottom: 20px;
-            font-size: 22px;
         }
 
         .form-item {
-            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
+            margin-bottom: 15px;
         }
 
         .form-item label {
@@ -62,11 +82,11 @@
 
         .form-actions {
             margin-top: 20px;
+            text-align: center;
         }
 
         button {
-            width: 100%;
-            padding: 10px;
+            padding: 10px 20px;
             background-color: #007bff;
             color: #fff;
             border: none;
@@ -74,6 +94,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
+            width: 100%;
         }
 
         button:hover {
@@ -81,9 +102,8 @@
         }
 
         a {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
+            display: inline-block;
+            margin-top: 10px;
             color: #007bff;
             text-decoration: none;
             font-size: 14px;
@@ -97,25 +117,23 @@
 </head>
 
 <body>
-    <div class="form-container">
-        <h1>Login Petugas</h1>
-        <form action="" method="post">
-            <div class="form-item">
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username" required>
-            </div>
+    <form action="" method="post" class="form-login">
+        <p>Login Petugas</p>
+        <div class="form-item">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required>
+        </div>
 
-            <div class="form-item">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" required>
-            </div>
+        <div class="form-item">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+        </div>
 
-            <div class="form-actions">
-                <button type="submit">Login</button>
-                <a href="/login.php">Kembali ke Halaman Utama</a>
-            </div>
-        </form>
-    </div>
+        <div class="form-actions">
+            <button type="submit">Login</button>
+            <a href="../index.php">Kembali ke Halaman Utama</a>
+        </div>
+    </form>
 </body>
 
 </html>
